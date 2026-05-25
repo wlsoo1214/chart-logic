@@ -1,0 +1,82 @@
+<!-- src/web/templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ChartLogic Observability Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8 border-b border-gray-700 pb-4">
+            <h1 class="text-3xl font-bold tracking-tight text-emerald-400">📈 ChartLogic Systems Control</h1>
+            <p class="text-gray-400">Production AI Agent Observability Ledger & Execution Trace Dashboard</p>
+        </header>
+
+        <!-- Dynamic Trigger Block -->
+        <section class="bg-gray-800 p-6 rounded-lg mb-8 shadow-md border border-gray-700">
+            <h2 class="text-lg font-semibold mb-3 text-gray-200">Trigger Analytical Pipeline Run</h2>
+            <form action="/analyze" method="POST" class="flex gap-4">
+                <input type="text" name="prompt" value="Analyze technical status for TSLA"
+                    class="bg-gray-900 border border-gray-700 rounded px-4 py-2 w-full focus:outline-none focus:border-emerald-500 text-gray-200">
+                <button type="submit"
+                    class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-6 py-2 rounded transition">
+                    Run Trace
+                </button>
+            </form>
+        </section>
+
+        <!-- Log Audit Output Table Grid -->
+        <section class="bg-gray-800 rounded-lg shadow-md border border-gray-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-700 bg-gray-850">
+                <h2 class="text-xl font-bold text-gray-200">Agent Performance History & Token Audit Logs</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-gray-900 text-gray-400 text-xs font-semibold uppercase tracking-wider border-b border-gray-700">
+                            <th class="px-6 py-3">Timestamp</th>
+                            <th class="px-6 py-3">Ticker</th>
+                            <th class="px-6 py-3">Orchestrated Tool</th>
+                            <th class="px-6 py-3">Total Tokens</th>
+                            <th class="px-6 py-3">Computed Cost</th>
+                            <th class="px-6 py-3">Latency</th>
+                            <th class="px-6 py-3">Trend Signal</th>
+                            <th class="px-6 py-3">Agent Synthesized Breakdown</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700 text-sm">
+                        {% for t in traces %}
+                        <tr class="hover:bg-gray-750 transition duration-150">
+                            <td class="px-6 py-4 font-mono text-xs text-gray-400">{{ t.timestamp }}</td>
+                            <td class="px-6 py-4 font-bold text-emerald-400">{{ t.ticker }}</td>
+                            <td class="px-6 py-4"><span class="bg-blue-900 text-blue-300 px-2 py-0.5 rounded text-xs">{{
+                                    t.tool_used }}</span></td>
+                            <td class="px-6 py-4 font-mono">{{ t.total_tokens }}</td>
+                            <td class="px-6 py-4 font-mono text-amber-400">${{ "%.5f"|format(t.cost_usd) }}</td>
+                            <td class="px-6 py-4 font-mono text-gray-300">{{ t.latency_sec }}s</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded text-xs font-semibold
+                                    {% if t.parsed_output.trend == 'BULLISH' %} bg-emerald-900 text-emerald-300
+                                    {% elif t.parsed_output.trend == 'BEARISH' %} bg-red-900 text-red-300
+                                    {% else %} bg-gray-700 text-gray-300 {% endif %}">
+                                    {{ t.parsed_output.trend }}
+                                </span>
+                            </td>
+                            <td
+                                class="px-6 py-4 text-gray-300 max-w-md truncate title='{{ t.parsed_output.reasoning }}'">
+                                {{ t.parsed_output.reasoning }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>
